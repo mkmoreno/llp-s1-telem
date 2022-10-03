@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <locale.h>
+#include <stdlib.h>
+#include <time.h>
 
 int main () {
 	setlocale (LC_ALL, "Portuguese"); 
@@ -7,38 +9,67 @@ int main () {
 	printf ("* Bem-vindo ao Jogo da Advinhação *\n");
 	printf ("***********************************\n");
 	
-  int numerosecreto = 42;
+  int segundos = time(0);
+  srand(segundos);
+  int numerogrande = rand();
+  int numerosecreto = numerogrande % 100;
   int chute;
-  int ganhou = 0;
-  int tentativas = 1;
   double pontos = 1000;
+  int nivel;
+  int valido = 1;
+  int totaldetentativas;
   
-  while (!ganhou){
-    printf ("\nQual é o seu %d° chute: ",tentativas);
+  while (valido) {
+  printf("\nQual o nível de dificuldade?\n");
+  printf("(1) Fácil (2) Médio (3) Difícil\n\n");
+  printf("Escolha: ");
+  scanf("%d", &nivel);
+  if (nivel <= 0 || nivel > 3) {
+    printf ("Opção inválida!\nDigite uma opção válida.\n");
+    continue;
+  } else if (nivel == 1) {
+    totaldetentativas = 20;
+    valido = 0;
+  } else if (nivel == 2) {
+    totaldetentativas = 15;
+    valido = 0;
+  } else {
+    totaldetentativas = 6;
+    valido = 0;
+  }
+}
+  
+  for (int i = 1; i <= totaldetentativas; i++) {
+    printf ("\nSeu %dº chute de %dº é: ",i, totaldetentativas);
 	  scanf ("%d", &chute);
   int acertou = chute == numerosecreto;
   int maior = chute > numerosecreto;
   if (maior) {
-    double pontosperdidos = (chute - numerosecreto)/2.0;
+    double pontosperdidos = (chute - numerosecreto)/(double)2;
     pontos = pontos - pontosperdidos;
     } else {
-    int pontosperdidos = (numerosecreto - chute)/2.0;
-    pontos = pontos - pontosperdidos;}
+    int pontosperdidos = abs(chute - numerosecreto)/(double)2;
+    pontos = pontos - pontosperdidos;
+    }
   if (chute < 0) {
     printf ("Você não pode chutar números negativos");
+    i--;
     continue;
   }
-	if (acertou) {
+    
+  int perdeu = chute == totaldetentativas;
+	int venceu = chute == numerosecreto; 
+  if (venceu) {
 		printf ("Parabéns! Você acertou!");
-    ganhou = 1;
     printf("\nVocê fez %.2f pontos\n",pontos);
     printf("\nObrigado por jogar!\n");
-	} else if (maior) {
+    break;
+    } else if (maior) {
 		printf ("Seu chute foi maior que o número secreto!");
 		} else {
 		printf ("Seu chute foi menor que o número secreto!");
 		}
-    tentativas++;
-	 }
   }
+}
+
  
